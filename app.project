@@ -1,0 +1,63 @@
+[app-info]
+app-name: Shiki Taishou Rewrite
+version: 0.4.1
+author: Henry Tran
+app-target: python
+
+[requirements]
+discord.py: >=2.0.1
+async-timeout: >=4.0.1
+asyncio: >=3.4.3
+PyNaCl: >=1.4.0
+DateTime: >=4.7.0
+python: >=3.10.0
+
+[executeable]
+run: python3 main.py
+log: python3 src\logtest.py
+
+[includes]
+[
+    "\src"
+    "\scripts"
+    "\scripts\addons"
+    "\app"
+    "\senv"
+    "\genx"
+]
+
+[materials]
+[
+    "\json"
+    "\logs"
+]
+
+[extensions]
+(
+    .add(gitignore, "\.gitignore")
+    .add(env, ["\.senv", "\senv"])
+    .add(start, ["\start.bat", "\start.sh"])
+    .add(readme, "\README.md")
+    .add(license, "\LICENSE")
+    .add(requirements, "\requirements.txt")
+)
+
+[project-settings]
+compiler: cpython
+macro: asfl++
+license-provider: MIT
+3rd-party-programs: senv, genx, idax
+compile-mode: release
+
+[setup]
+[no-file]
+
+[project-release]
+min-version: 0.3.5
+max-version: 0.4.1
+operating-systems: win64, win32, macintosh, linux, unix, freebsd
+main-git-branch: master
+git: https://github.com/Henrydev-tran/Shiki-rewrite.git
+legacy-mode: false
+auto-pull: false
+project-executeable: false
