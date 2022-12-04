@@ -560,7 +560,7 @@ async def test(interaction: discord.Interaction):
 #async def challenge(interaction: discord.Interaction):
 #@tree.command(name = "challenge", description = "Start A Challenge :)", guild = discord.Object(id = 882070536430166067))
 #async def challenge(interaction: discord.Interaction):
-
+#
 #while True:
 #    if not logtest.done:
 #        continue
