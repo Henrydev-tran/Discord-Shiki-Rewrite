@@ -1,6 +1,6 @@
 [app-info]
 app-name: Shiki Taishou Rewrite
-version: 0.4.1
+version: 0.4.3
 author: Henry Tran
 app-target: python
 
@@ -40,10 +40,11 @@ log: python3 src\logtest.py
     .add(readme, "\README.md")
     .add(license, "\LICENSE")
     .add(requirements, "\requirements.txt")
+    .add(name(asyncio_ext), "\asyncio_ext")
 )
 
 [project-settings]
-compiler: cpython
+compiler: cpython || python3
 macro: asfl++
 license-provider: MIT
 3rd-party-programs: senv, genx, idax
@@ -54,10 +55,13 @@ compile-mode: release
 
 [project-release]
 min-version: 0.3.5
-max-version: 0.4.1
+max-version: 0.4.3
 operating-systems: win64, win32, macintosh, linux, unix, freebsd
 main-git-branch: master
 git: https://github.com/Henrydev-tran/Shiki-rewrite.git
 legacy-mode: false
 auto-pull: false
 project-executeable: false
+project-state: PRE-ALPHA
+encoding: UTF-8
+environment-variables: true

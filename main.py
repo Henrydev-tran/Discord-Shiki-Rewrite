@@ -12,6 +12,8 @@ from app.Game import _vbase__game, _vlabyrinth__game, _vspiral__game
 import src.logtest as logtest
 import src.autosave as autosave
 import copy
+import threading
+from asyncio_ext.cooldown import Cooldown as async_cooldown
 
 import discord
 from discord import app_commands
@@ -471,7 +473,20 @@ async def challenge(interaction: discord.Interaction):
         party = await get_party(user)
 
         _vgame = _vspiral__game(id = interaction.user.id, login_data = userdata, userparty = party)
-        await _vhandle_spiral__game(game = _vgame, interaction = interaction)
+
+        async def placeholder_callback():
+            await _vhandle_spiral__game(game = _vgame, interaction = interaction)
+
+        def _vcl():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+            loop.run_until_complete(placeholder_callback())
+            loop.close()
+
+        _thread = threading.Thread(target=_vcl)
+        _thread.start()
+
 
         _vspiral.callback = _vhandle__callback(None)
         _vlabyrinth.callback = _vhandle__callback(None)
@@ -516,6 +531,11 @@ async def _vhandle_spiral__game(game: _vspiral__game, interaction: discord.Inter
         _v__view = _virtual__view()
         _vstart = _vgreen__button("Start", "start_button")
 
+        async def start_callback(interaction: discord.Interaction):
+            pass
+
+        _v__view.add_item(_vstart)
+
         _vembed = discord.Embed(
             title=f"Spiral Abyss : floor {userdata[4][0]} chamber {userdata[4][1]}",
             description="The game will automaticaly save every 5-10 seconds or when you pause",
@@ -524,9 +544,9 @@ async def _vhandle_spiral__game(game: _vspiral__game, interaction: discord.Inter
 
         _vembed.add_field(name="Challenge Info", value="Defeat all enemies", inline=True)
 
-        _vembed.set_footer("THE AUTOSAVE FEATURE IS STILL IN HEAVY DEVELOPENT, YOU ARE BOUND TO LOSE YOUR DATA IF YOU LEAVE")
+        _vembed.set_footer("THE AUTOSAVE FEATURE IS STILL IN HEAVY DEVELOPENT, YOU ARE BOUND TO LOSE YOUR DATA AT ANY MOMENT")
 
-        await interaction.response.send_message("This part is currently in development", ephemeral=True)
+        await interaction.response.send_message(view=_v__view, embed=embed, ephemeral=True)
         _vno.callback = _vhandle__callback(None)
         _vyes.callback = _vhandle__callback(None)
 
@@ -553,9 +573,48 @@ Do you want to continue?""",
 async def _vhandle_labyrinth__game(game: _vlabyrinth__game):
     pass
 
-@tree.command(name = "test", description = "Test", guild = discord.Object(id = 882070536430166067))
+@tree.command(name = "battle_test", description = "Test", guild = discord.Object(id = 882070536430166067))
 async def test(interaction: discord.Interaction):
-    await interaction.response.send_message("<:traveller:1048802973066743858>")
+    _vcur_seleted = None
+
+    view = _virtual__view()
+
+    chars = discord.ui.Select(
+        placeholder="Choose a Character",
+        options=[
+        discord.SelectOption(label="Aether (anemo)", emoji="😐", description="hp: 0, infused: 0, buffs: 0, ult: on/off"),
+        discord.SelectOption(label="Amber", emoji="😐", description="hp: 0, infused: 0, buffs: 0, ult: on/off"),
+        discord.SelectOption(label="Lisa", emoji="😐", description="hp: 0, infused: 0, buffs: 0, ult: on/off"),
+        discord.SelectOption(label="Kaeya", emoji="😐", description="hp: 0, infused: 0, buffs: 0, ult: on/off")
+    ])
+
+    view.add_item(chars)
+
+    _vattack = _vblurple__button("Attack", "attack_button", "⚔")
+    _vskill = _vgreen__button("Skill", "skill_button", "🌊")
+    _vult = _vred__button("Ultimate", "ultimate_button", "🎇")
+    _vpause = _vgray__button("Pause Game", "pause_button")
+
+    view.add_item(_vattack)
+    view.add_item(_vskill)
+    view.add_item(_vult)
+    view.add_item(_vpause)
+        
+    embed = discord.Embed(
+        title = "Spiral Abyss : floor 0 chamber 0",
+        description = """<this displays events during the fight>
+The game will automaticaly save every 5-10 seconds or when you pause""",
+        color = 0x03a5fc
+    )
+
+    embed.set_footer(text="Pause the challenge using the button or /pause and resume with /resume")
+
+    embed.add_field(name = "Character Info", value = "<this displays info about the character>", inline = True)
+    embed.add_field(name = "Enemy Info", value = "<this displays info about enemies>", inline = True)
+    embed.add_field(name = "Challenge Info", value = "<this displays info about the challenge>", inline = True)
+
+    await interaction.response.send_message(embed=embed, view=view)
+    
 #@tree.command(name = "challenge", description = "Start A Challenge :)", guild = discord.Object(id = 882070536430166067))
 #async def challenge(interaction: discord.Interaction):
 #@tree.command(name = "challenge", description = "Start A Challenge :)", guild = discord.Object(id = 882070536430166067))
