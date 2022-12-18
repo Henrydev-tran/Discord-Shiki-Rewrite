@@ -614,6 +614,31 @@ The game will automaticaly save every 5-10 seconds or when you pause""",
     embed.add_field(name = "Challenge Info", value = "<this displays info about the challenge>", inline = True)
 
     await interaction.response.send_message(embed=embed, view=view)
+
+async def _vhandle_battle(game, interaction: discord.Interaction, objective, _vobjective_a, time):
+    # Objective types (first index of _vobjective_a)
+    # 0 - Defeat all enemies
+    # 1 - Defend statue
+    # 2 - Activate all buttons
+
+    # Objective data (second index)
+    # if first index is 0, 2nd index is amount of enemies
+    # if first index is 1, 2nd index is statue health
+    # if first index is 2, 2nd index is button amount
+
+
+    # Get basic info
+    userdata = await login(interaction.user.id)
+
+    userparty = game.userparty
+
+    enemies = game.enemies
+
+    battle_type = game.attri
+
+
+
+
     
 #@tree.command(name = "challenge", description = "Start A Challenge :)", guild = discord.Object(id = 882070536430166067))
 #async def challenge(interaction: discord.Interaction):
